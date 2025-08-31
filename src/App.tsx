@@ -1,4 +1,5 @@
 import './App.css'
+import MatterScene from './components/MatterScene.tsx'
 import { useState } from 'react'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <>
+      <MatterScene />
       <h1>
         {time}
       </h1>
