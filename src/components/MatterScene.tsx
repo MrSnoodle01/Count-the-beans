@@ -38,6 +38,9 @@ const containers = [
         Bodies.rectangle(1320, 560, 700, 20, { isStatic: true, angle: 1.5708 }),
     ], [ // circle
         createHollowCircle(960, 540, 500, 450, 100),
+    ], [ // inverted triangle
+        Bodies.rectangle(645, 650, 900, 20, { isStatic: true, angle: 0.785398 }),
+        Bodies.rectangle(1270, 650, 900, 20, { isStatic: true, angle: 2.35619 }),
     ]
 ]
 
@@ -87,8 +90,8 @@ export default function MatterScene() {
             renderRef.current = render;
             runnerRef.current = runner;
 
-            Composite.add(engine.world, containers[Math.floor(Math.random() * 2)]);
-            // Composite.add(engine.world, containers[2]);
+            Composite.add(engine.world, containers[Math.floor(Math.random() * 3)]);
+            // Composite.add(engine.world, containers[3]);
             let beans = [];
             for (let i = 0; i < numberOfShapes; i++) {
                 const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`; // random hex color
