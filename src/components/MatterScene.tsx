@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Engine, Render, Runner, Bodies, Composite } from "matter-js";
+import Matter, { Engine, Render, Runner, Bodies, Composite } from "matter-js";
 // using poly-decomp creates much better concave beans, but also adds some buggy lines in the middle of the bean
 // I think it has something to do with how the program triangulate the vertices
 import decomp from "poly-decomp";
@@ -31,6 +31,35 @@ const beanShape = [
     { x: 6.3, y: 1.6 },
 ];
 
+const containers = [
+    [ // jar
+        Bodies.rectangle(960, 900, 720, 20, { isStatic: true }),
+        Bodies.rectangle(600, 560, 700, 20, { isStatic: true, angle: 1.5708 }),
+        Bodies.rectangle(1320, 560, 700, 20, { isStatic: true, angle: 1.5708 }),
+    ], [ // circle
+        createHollowCircle(960, 540, 500, 450, 100),
+    ]
+]
+
+function createHollowCircle(x: number, y: number, outerRadius: number, innerRadius: number, segments: number) {
+    const bodies = [];
+    const thickness = outerRadius - innerRadius;
+
+    for (let i = 0; i < segments; i++) {
+        const angle = (i / segments) * Math.PI * 2;
+        const midRadius = innerRadius + (thickness / 2);
+
+        const outerX = x + midRadius * Math.cos(angle);
+        const outerY = y + midRadius * Math.sin(angle);
+
+        if (outerY > 100) {
+            const segmentBody = Matter.Bodies.rectangle(outerX, outerY, thickness, (outerRadius * 2 * Math.PI) / segments, { angle: angle, isStatic: true });
+            bodies.push(segmentBody)
+        }
+    }
+    return Matter.Composite.create({ bodies: bodies });
+}
+
 export default function MatterScene() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<Engine | null>(null);
@@ -58,13 +87,14 @@ export default function MatterScene() {
             renderRef.current = render;
             runnerRef.current = runner;
 
-            const ground = Bodies.rectangle(960, 1080, 1920, 60, { isStatic: true });
-            let shapes = [ground];
+            Composite.add(engine.world, containers[Math.floor(Math.random() * 2)]);
+            // Composite.add(engine.world, containers[2]);
+            let beans = [];
             for (let i = 0; i < numberOfShapes; i++) {
                 const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`; // random hex color
-                shapes.push(Bodies.fromVertices(960, 1080 - (i * 50), [beanShape], { render: { fillStyle: color, strokeStyle: 'transparent' } }, false));
+                beans.push(Bodies.fromVertices(960, 100 - (i * 25), [beanShape], { render: { fillStyle: color, strokeStyle: 'transparent' } }, false));
             }
-            Composite.add(engine.world, shapes);
+            Composite.add(engine.world, beans);
 
             Render.run(render);
             Runner.run(runner, engine);
@@ -80,7 +110,7 @@ export default function MatterScene() {
     return (
         <>
             <h3>{numberOfShapes}</h3>
-            <button onClick={() => setNumberOfShapes(Math.floor(Math.random() * 500))}>Re-render Shapes</button>
+            <button onClick={() => setNumberOfShapes(Math.floor(Math.random() * 500))}>Respawn beans</button>
             <canvas ref={canvasRef} style={{ width: '75vw', height: '75vh', display: 'block', margin: '0 auto', border: '1px solid #ccc' }} />
         </>
     )
