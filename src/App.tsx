@@ -13,11 +13,11 @@ function App() {
 
   return (
     <>
-      <MatterScene />
       <h1>
         {time}
       </h1>
       {time === '10:29:10 AM' ? <h2>Time to count the beans!</h2> : <h2>Time to NOT count the beans!</h2>}
+      <MatterScene />
     </>
   )
 }
