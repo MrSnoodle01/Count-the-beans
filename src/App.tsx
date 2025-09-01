@@ -9,6 +9,7 @@ export default function App() {
   const [guess, setGuess] = useState(0);
   const [numberOfBeans, setNumberOfBeans] = useState(Math.floor(Math.random() * 500) + 50);
   const [guesses, setGuesses] = useState<string[]>([]);
+  const [previousGuess, setPreviousGuess] = useState(0);
 
   setInterval(() => {
     const newTime = new Date();
@@ -25,8 +26,9 @@ export default function App() {
           <label htmlFor="numberGuess">Guess how many beans</label>
           <input name="numberGuess" id="numberGuess" type="number" onChange={e => setGuess(Number(e.target.value))} />
           <button onClick={() => {
-            if (guesses.length <= 4) {
+            if (guesses.length <= 4 && previousGuess !== numberOfBeans) {
               setGuesses([...guesses, getGuessDistance(guess, numberOfBeans)]);
+              setPreviousGuess(guess);
             }
           }}>Submit</button>
         </div>

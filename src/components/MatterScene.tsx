@@ -72,6 +72,8 @@ export default function MatterScene(props: { numberOfBeans: number }) {
     useEffect(() => {
         if (canvasRef.current) {
             const engine = Engine.create();
+            engine.positionIterations = 50;
+            engine.velocityIterations = 50;
             const render = Render.create({
                 element: canvasRef.current.parentElement as HTMLElement,
                 canvas: canvasRef.current,
@@ -79,7 +81,8 @@ export default function MatterScene(props: { numberOfBeans: number }) {
                 options: {
                     width: 1920,
                     height: 1080,
-                    wireframes: false
+                    wireframes: false,
+                    background: '#636262',
                 }
             });
 
@@ -90,7 +93,7 @@ export default function MatterScene(props: { numberOfBeans: number }) {
             runnerRef.current = runner;
 
             Composite.add(engine.world, containers[Math.floor(Math.random() * 3)]);
-            // Composite.add(engine.world, containers[3]);
+            // Composite.add(engine.world, containers[2]);
             let beans = [];
             for (let i = 0; i < props.numberOfBeans; i++) {
                 const color = `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`; // random hex color
