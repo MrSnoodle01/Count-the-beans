@@ -17,6 +17,9 @@ export default function App() {
   const closeModal = () => setWinScreenOpen(false);
 
   function getGuessDistance(guess: number, answer: number) {
+    if (guesses.length === 4) {
+      openModal();
+    }
     if (guess === answer) {
       openModal();
       return (guess + " 🎉");
@@ -48,7 +51,12 @@ export default function App() {
       <h1>
         {time}
       </h1>
-      <YouWinModal isOpen={winScreenOpen} onClose={closeModal} guesses={guesses} />
+      <YouWinModal
+        isOpen={winScreenOpen}
+        onClose={closeModal}
+        guesses={guesses}
+        tries={previousGuess === numberOfBeans ? String(guesses.length) : "X"} answer={numberOfBeans}
+      />
       <div className='top-section'>
         <div className='guess-input'>
           <label htmlFor="numberGuess">Guess how many beans</label>
