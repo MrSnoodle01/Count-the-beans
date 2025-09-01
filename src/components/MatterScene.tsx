@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Matter, { Engine, Render, Runner, Bodies, Composite } from "matter-js";
 // using poly-decomp creates much better concave beans, but also adds some buggy lines in the middle of the bean
 // I think it has something to do with how the program triangulate the vertices
@@ -63,12 +63,11 @@ function createHollowCircle(x: number, y: number, outerRadius: number, innerRadi
     return Matter.Composite.create({ bodies: bodies });
 }
 
-export default function MatterScene() {
+export default function MatterScene(props: { numberOfBeans: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<Engine | null>(null);
     const renderRef = useRef<Render | null>(null);
     const runnerRef = useRef<Runner | null>(null);
-    const [numberOfShapes, setNumberOfShapes] = useState(Math.floor(Math.random() * 500));
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -93,8 +92,8 @@ export default function MatterScene() {
             Composite.add(engine.world, containers[Math.floor(Math.random() * 3)]);
             // Composite.add(engine.world, containers[3]);
             let beans = [];
-            for (let i = 0; i < numberOfShapes; i++) {
-                const color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`; // random hex color
+            for (let i = 0; i < props.numberOfBeans; i++) {
+                const color = `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`; // random hex color
                 beans.push(Bodies.fromVertices(960, 100 - (i * 25), [beanShape], { render: { fillStyle: color, strokeStyle: 'transparent' } }, false));
             }
             Composite.add(engine.world, beans);
@@ -108,13 +107,11 @@ export default function MatterScene() {
                 Engine.clear(engine);
             };
         }
-    }, [numberOfShapes]);
+    }, [props.numberOfBeans]);
 
     return (
-        <>
-            <h3>{numberOfShapes}</h3>
-            <button onClick={() => setNumberOfShapes(Math.floor(Math.random() * 500))}>Respawn beans</button>
+        <div className='bean-screen'>
             <canvas ref={canvasRef} style={{ width: '75vw', height: '75vh', display: 'block', margin: '0 auto', border: '1px solid #ccc' }} />
-        </>
+        </div>
     )
 }
