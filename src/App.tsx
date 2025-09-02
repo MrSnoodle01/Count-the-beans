@@ -57,7 +57,7 @@ export default function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await supabase.from('data').select();
+      const { data } = await supabase.from('data').select().eq('day', day);
       if (data) {
         if (getDate() !== day - 1) {
           setGuesses([]);
