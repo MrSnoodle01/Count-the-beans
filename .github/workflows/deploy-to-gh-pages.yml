@@ -16,5 +16,5 @@ jobs:
           npm install
           npm run build
         env: 
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_KEY: ${{ secrets.DATABASE_KEY }}
+          VITE_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          VITE_DATABASE_KEY: ${{ secrets.DATABASE_KEY }}
