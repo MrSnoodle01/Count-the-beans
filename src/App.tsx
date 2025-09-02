@@ -4,6 +4,7 @@ import Guesses from './components/Guesses.tsx'
 import YouWinModal from './components/YouWinModal.tsx'
 import { createClient } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
+import persistedState from './assets/usePersistedState.ts'
 
 export default function App() {
   const supabaseUrl = import.meta.env.VITE_DATABASE_URL as string;
@@ -13,12 +14,11 @@ export default function App() {
   const currentDate = new Date();
 
   const [guess, setGuess] = useState("");
-  // const [numberOfBeans, setNumberOfBeans] = useState(Math.floor(Math.random() * 500) + 50);
   const [numberOfBeans, setNumberOfBeans] = useState(0);
-  const [guesses, setGuesses] = useState<string[]>([]);
-  const [previousGuess, setPreviousGuess] = useState(0);
+  const [guesses, setGuesses] = persistedState<string[]>('guesses', []);
+  const [previousGuess, setPreviousGuess] = persistedState<number>('previousGuess', 0);
   const [winScreenOpen, setWinScreenOpen] = useState(false);
-  const [day, setDay] = useState(0);
+  const [day, setDay] = persistedState<number>('day', 0);
   const [container, setContainer] = useState(0);
 
   const openModal = () => setWinScreenOpen(true);
@@ -59,10 +59,13 @@ export default function App() {
     const fetchData = async () => {
       const { data } = await supabase.from('data').select();
       if (data) {
+        if (getDate() !== day - 1) {
+          setGuesses([]);
+          setPreviousGuess(0);
+          setDay(data[getDate()].day);
+        }
         setNumberOfBeans(data[getDate()].beanCount);
-        setDay(data[getDate()].day);
         setContainer(data[getDate()].container - 1);
-        console.log(data[getDate()]);
       }
     }
     fetchData();
