@@ -57,11 +57,15 @@ export default function App() {
 
   useEffect(() => {
     const fetchData = async () => {
+      // need this local bean count to check if user has previously won since useState wont update until next render
+      let localBeanCount = 0;
+
       // if day in local storage is equal to current day dont update anything, only spawn in beans again
       if (getDate() === day - 1) {
         const { data } = await supabase.from('data').select().eq('day', day);
         if (data) {
           setNumberOfBeans(data[0].beanCount);
+          localBeanCount = data[0].beanCount;
           setContainer(data[0].container - 1);
         }
       } else { // else if there is a new day then update everything to the next day
@@ -71,20 +75,13 @@ export default function App() {
           setPreviousGuess(0);
           setDay(data[0].day);
           setNumberOfBeans(data[0].beanCount);
+          localBeanCount = data[0].beanCount;
           setContainer(data[0].container - 1);
         }
       }
-
-      // console.log(data);
-      // if (data) {
-      //   if (getDate() !== day - 1) {
-      //     setGuesses([]);
-      //     setPreviousGuess(0);
-      //     setDay(data[0].day);
-      //   }
-      //   setNumberOfBeans(data[0].beanCount);
-      //   setContainer(data[0].container - 1);
-      // }
+      if (guesses.length === 5 || (previousGuess === localBeanCount && localBeanCount !== 0)) {
+        openModal();
+      }
     }
     fetchData();
   }, [])
@@ -117,11 +114,6 @@ export default function App() {
         <Guesses guesses={guesses} />
       </div>
       <div className='bean-screen'>
-        {/* <h3>{numberOfBeans}</h3>
-        <button onClick={() => {
-          setNumberOfBeans(Math.floor(Math.random() * 500) + 50);
-          setGuesses([]);
-        }}>Respawn beans</button> */}
         <MatterScene
           numberOfBeans={numberOfBeans}
           container={container}

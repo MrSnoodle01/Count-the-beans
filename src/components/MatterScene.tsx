@@ -113,7 +113,7 @@ export default function MatterScene(props: { numberOfBeans: number, container: n
 
     return (
         <div className='bean-screen'>
-            <canvas ref={canvasRef} style={{ width: '75vw', height: '75vh', display: 'block', margin: '0 auto', border: '1px solid #ccc' }} />
+            <canvas ref={canvasRef} style={{ width: '75vw', height: '75vh', display: 'block', margin: '0 auto' }} />
         </div>
     )
 }
