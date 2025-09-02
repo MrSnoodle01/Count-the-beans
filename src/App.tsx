@@ -18,7 +18,7 @@ export default function App() {
   const [guesses, setGuesses] = persistedState<string[]>('guesses', []);
   const [previousGuess, setPreviousGuess] = persistedState<number>('previousGuess', 0);
   const [winScreenOpen, setWinScreenOpen] = useState(false);
-  const [day, setDay] = persistedState<number>('day', 0);
+  const [day, setDay] = persistedState<number>('day', 1);
   const [container, setContainer] = useState(0);
 
   const openModal = () => setWinScreenOpen(true);
