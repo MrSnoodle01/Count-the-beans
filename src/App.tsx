@@ -6,12 +6,11 @@ import { createClient } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 
 export default function App() {
-  const supabaseUrl = process.env.DATABASE_URL as string;
-  const supabaseKey = process.env.DATABASE_KEY as string;
+  const supabaseUrl = import.meta.env.VITE_DATABASE_URL as string;
+  const supabaseKey = import.meta.env.VITE_DATABASE_KEY as string;
   const supabase = createClient(supabaseUrl, supabaseKey);
   const originalDate = new Date('2025-9-1');
   const currentDate = new Date();
-  const time = originalDate.getTime() - currentDate.getTime();
 
   const [guess, setGuess] = useState("");
   // const [numberOfBeans, setNumberOfBeans] = useState(Math.floor(Math.random() * 500) + 50);
@@ -71,9 +70,6 @@ export default function App() {
 
   return (
     <div className='page-center'>
-      <h1>
-        {time}
-      </h1>
       <YouWinModal
         isOpen={winScreenOpen}
         onClose={closeModal}
