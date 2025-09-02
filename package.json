@@ -13,6 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.56.1",
+    "dotenv": "^17.2.1",
     "matter-js": "^0.20.0",
     "poly-decomp": "^0.3.0",
     "react": "^19.1.1",

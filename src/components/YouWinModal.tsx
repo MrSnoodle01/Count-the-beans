@@ -5,11 +5,11 @@ function getEmojisFromText(text: string): string[] {
     return text.match(emojiRegex) || [];
 }
 
-export default function YouWinModal(props: { isOpen: boolean, onClose: () => void, guesses: string[], tries: string, answer: number }) {
+export default function YouWinModal(props: { isOpen: boolean, onClose: () => void, guesses: string[], tries: string, answer: number, day: number }) {
     if (!props.isOpen) return null;
 
     const copyToClipboard = async () => {
-        let text: string = "Beans #1 " + props.tries + "/5" +
+        let text: string = `Beans #${props.day} ` + props.tries + "/5" +
             props.guesses.map(guess => "\n" + getEmojisFromText(guess).join("")).join("");
         try {
             await navigator.clipboard.writeText(text);

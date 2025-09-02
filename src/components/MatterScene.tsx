@@ -63,7 +63,7 @@ function createHollowCircle(x: number, y: number, outerRadius: number, innerRadi
     return Matter.Composite.create({ bodies: bodies });
 }
 
-export default function MatterScene(props: { numberOfBeans: number }) {
+export default function MatterScene(props: { numberOfBeans: number, container: number }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const engineRef = useRef<Engine | null>(null);
     const renderRef = useRef<Render | null>(null);
@@ -92,8 +92,7 @@ export default function MatterScene(props: { numberOfBeans: number }) {
             renderRef.current = render;
             runnerRef.current = runner;
 
-            Composite.add(engine.world, containers[Math.floor(Math.random() * 3)]);
-            // Composite.add(engine.world, containers[2]);
+            Composite.add(engine.world, containers[props.container]);
             let beans = [];
             for (let i = 0; i < props.numberOfBeans; i++) {
                 const color = `#${Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0')}`; // random hex color
