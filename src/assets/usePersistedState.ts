@@ -4,7 +4,6 @@ export default function usePersistedState<T>(key: string, initialState: T): [T, 
     const [state, setState] = useState<T>(() => {
         try {
             const storedValue = localStorage.getItem(key);
-            console.log(key, storedValue);
             if (key === "day" && storedValue === "0") {
                 return 1;
             }
