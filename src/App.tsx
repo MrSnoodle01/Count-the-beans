@@ -10,16 +10,15 @@ export default function App() {
   const supabaseUrl = import.meta.env.VITE_DATABASE_URL as string;
   const supabaseKey = import.meta.env.VITE_DATABASE_KEY as string;
   const supabase = createClient(supabaseUrl, supabaseKey);
-  const originalDate = new Date('2025-9-1');
+  const originalDate = new Date('2025-8-31');
   const currentDate = new Date();
 
   const [guess, setGuess] = useState("");
-  const [numberOfBeans, setNumberOfBeans] = useState(0);
   const [guesses, setGuesses] = persistedState<string[]>('guesses', []);
   const [previousGuess, setPreviousGuess] = persistedState<number>('previousGuess', 0);
   const [winScreenOpen, setWinScreenOpen] = useState(false);
-  const [day, setDay] = persistedState<number>('day', 1);
-  const [container, setContainer] = useState(0);
+  const [day, setDay] = persistedState<number>('day', getDate());
+  const [matterInfo, setMatterInfo] = useState({ numberOfBeans: 0, container: 0 });
 
   const openModal = () => setWinScreenOpen(true);
   const closeModal = () => setWinScreenOpen(false);
@@ -56,27 +55,21 @@ export default function App() {
   }
 
   useEffect(() => {
+    closeModal();
     const fetchData = async () => {
-      // need this local bean count to check if user has previously won since useState wont update until next render
-      let localBeanCount = 0;
-
-      // if day in local storage is equal to current day dont update anything, only spawn in beans again
-      if (getDate() === day - 1) {
-        const { data } = await supabase.from('data').select().eq('day', day);
+      if (getDate() === day) { // if day in local storage is equal to current day dont update anything, only spawn in beans again
+        const { data } = await supabase.from('data').select().eq('day', getDate());
         if (data) {
-          setNumberOfBeans(data[0].beanCount);
-          localBeanCount = data[0].beanCount;
-          setContainer(data[0].container - 1);
+          setMatterInfo({ numberOfBeans: data[0].beanCount, container: data[0].container - 1 });
         }
-      } else { // else if there is a new day then update everything to the next day
-        const { data } = await supabase.from('data').select().eq('day', day + 1);
+      } else { // if there is a new day then update everything to the next day, or if day > getDate, meaning the days have become unsynced. So sync them again
+        console.log("else");
+        const { data } = await supabase.from('data').select().eq('day', getDate());
         if (data) {
           setGuesses([]);
           setPreviousGuess(0);
           setDay(data[0].day);
-          setNumberOfBeans(data[0].beanCount);
-          localBeanCount = data[0].beanCount;
-          setContainer(data[0].container - 1);
+          setMatterInfo({ numberOfBeans: data[0].beanCount, container: data[0].container - 1 });
         }
       }
     }
@@ -90,7 +83,7 @@ export default function App() {
           isOpen={winScreenOpen}
           onClose={closeModal}
           guesses={guesses}
-          tries={previousGuess === numberOfBeans ? String(guesses.length) : "X"} answer={numberOfBeans}
+          tries={previousGuess === matterInfo.numberOfBeans ? String(guesses.length) : "X"} answer={matterInfo.numberOfBeans}
           day={day}
         />
         <div className='top-section'>
@@ -103,14 +96,14 @@ export default function App() {
                 alert("Please enter a valid number");
                 return;
               }
-              if (guesses.length <= 4 && previousGuess !== numberOfBeans) {
-                setGuesses([...guesses, getGuessDistance(Number(guess), numberOfBeans)]);
+              if (guesses.length <= 4 && previousGuess !== matterInfo.numberOfBeans) {
+                setGuesses([...guesses, getGuessDistance(Number(guess), matterInfo.numberOfBeans)]);
                 setPreviousGuess(Number(guess));
               }
             }}>
               Submit
             </button>
-            {(guesses.length === 5 || previousGuess === numberOfBeans) &&
+            {(guesses.length === 5 || previousGuess === matterInfo.numberOfBeans) &&
               <button onClick={() => {
                 openModal();
               }
@@ -122,8 +115,8 @@ export default function App() {
         </div>
         <div className='bean-screen'>
           <MatterScene
-            numberOfBeans={numberOfBeans}
-            container={container}
+            numberOfBeans={matterInfo.numberOfBeans}
+            container={matterInfo.container}
           />
         </div>
       </div >

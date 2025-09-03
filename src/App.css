@@ -16,6 +16,7 @@
   border-radius: 12px;
   display: flex;
   flex-direction: column;
+  text-align: center;
   gap: 1vh;
 }
 
