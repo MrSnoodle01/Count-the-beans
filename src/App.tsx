@@ -79,9 +79,6 @@ export default function App() {
           setContainer(data[0].container - 1);
         }
       }
-      if (guesses.length === 5 || (previousGuess === localBeanCount && localBeanCount !== 0)) {
-        openModal();
-      }
     }
     fetchData();
   }, [])
