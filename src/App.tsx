@@ -87,38 +87,50 @@ export default function App() {
   }, [])
 
   return (
-    <div className='page-center'>
-      <YouWinModal
-        isOpen={winScreenOpen}
-        onClose={closeModal}
-        guesses={guesses}
-        tries={previousGuess === numberOfBeans ? String(guesses.length) : "X"} answer={numberOfBeans}
-        day={day}
-      />
-      <div className='top-section'>
-        <div className='guess-input'>
-          <label htmlFor="numberGuess">Guess how many beans</label>
-          <input name="numberGuess" id="numberGuess" type="number" onChange={e => setGuess(e.target.value)} />
-          <button onClick={() => {
-            let regex = /^\d+$/;
-            if (!regex.test(guess)) {
-              alert("Please enter a valid number");
-              return;
-            }
-            if (guesses.length <= 4 && previousGuess !== numberOfBeans) {
-              setGuesses([...guesses, getGuessDistance(Number(guess), numberOfBeans)]);
-              setPreviousGuess(Number(guess));
-            }
-          }}>Submit</button>
-        </div>
-        <Guesses guesses={guesses} />
-      </div>
-      <div className='bean-screen'>
-        <MatterScene
-          numberOfBeans={numberOfBeans}
-          container={container}
+    <>
+      <div className='page-center'>
+        <YouWinModal
+          isOpen={winScreenOpen}
+          onClose={closeModal}
+          guesses={guesses}
+          tries={previousGuess === numberOfBeans ? String(guesses.length) : "X"} answer={numberOfBeans}
+          day={day}
         />
-      </div>
-    </div >
+        <div className='top-section'>
+          <div className='guess-input'>
+            <label htmlFor="numberGuess">Guess how many beans</label>
+            <input name="numberGuess" id="numberGuess" type="number" onChange={e => setGuess(e.target.value)} />
+            <button onClick={() => {
+              let regex = /^\d+$/;
+              if (!regex.test(guess)) {
+                alert("Please enter a valid number");
+                return;
+              }
+              if (guesses.length <= 4 && previousGuess !== numberOfBeans) {
+                setGuesses([...guesses, getGuessDistance(Number(guess), numberOfBeans)]);
+                setPreviousGuess(Number(guess));
+              }
+            }}>
+              Submit
+            </button>
+            {(guesses.length === 5 || previousGuess === numberOfBeans) &&
+              <button onClick={() => {
+                openModal();
+              }
+              }>
+                See Score
+              </button>}
+          </div>
+          <Guesses guesses={guesses} />
+        </div>
+        <div className='bean-screen'>
+          <MatterScene
+            numberOfBeans={numberOfBeans}
+            container={container}
+          />
+        </div>
+      </div >
+    </>
+
   )
 }
