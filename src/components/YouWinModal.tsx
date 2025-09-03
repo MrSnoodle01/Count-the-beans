@@ -37,7 +37,7 @@ export default function YouWinModal(props: { isOpen: boolean, onClose: () => voi
             </h2>
             <button onClick={(copyToClipboard)}> Share Score </button>
             <button onClick={props.onClose}>Close</button>
-            {showCopyText && <text>Score copied to clipboard</text>}
+            {showCopyText && <p>Score copied to clipboard</p>}
         </div>,
         document.body
     );
