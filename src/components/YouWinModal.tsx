@@ -6,7 +6,7 @@ function getEmojisFromText(text: string): string[] {
     return text.match(emojiRegex) || [];
 }
 
-export default function YouWinModal(props: { isOpen: boolean, onClose: () => void, guesses: string[], tries: string, answer: number, day: number }) {
+export default function YouWinModal(props: { isOpen: boolean, onClose: () => void, guesses: string[], tries: string, answer: number, day: number, usingPractice: boolean }) {
     if (!props.isOpen) return null;
 
     const [showCopyText, setShowCopyText] = useState(false);
@@ -35,7 +35,7 @@ export default function YouWinModal(props: { isOpen: boolean, onClose: () => voi
                         `Better luck next time! The answer was ${props.answer}`
                 }
             </h2>
-            <button onClick={(copyToClipboard)}> Share Score </button>
+            {!props.usingPractice && <button onClick={(copyToClipboard)}> Share Score </button>}
             <button onClick={props.onClose}>Close</button>
             {showCopyText && <p>Score copied to clipboard</p>}
         </div>,
