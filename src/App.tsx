@@ -99,16 +99,30 @@ export default function App() {
         />
         <div className='top-section'>
           <div className='guess-input'>
-            <button onClick={() => setPracticeMode({
-              usingPractice: !practiceMode.usingPractice,
-              guesses: [],
-              beanCount: Math.floor(Math.random() * 500) + 50,
-              container: Math.floor(Math.random() * 3),
-              guess: "",
-              previousGuess: 0
-            })}>
-              {practiceMode.usingPractice ? "Go To Daily Mode" : "Go To Practice Mode"}
-            </button>
+            <div className='top-section'>
+              <button onClick={() => setPracticeMode({
+                usingPractice: !practiceMode.usingPractice,
+                guesses: [],
+                beanCount: Math.floor(Math.random() * 500) + 50,
+                container: Math.floor(Math.random() * 3),
+                guess: "",
+                previousGuess: 0
+              })}>
+                {practiceMode.usingPractice ? "Go To Daily Mode" : "Go To Practice Mode"}
+              </button>
+              {practiceMode.usingPractice &&
+                <button onClick={() => setPracticeMode({
+                  ...practiceMode,
+                  guesses: [],
+                  beanCount: Math.floor(Math.random() * 500) + 50,
+                  container: Math.floor(Math.random() * 3),
+                  guess: "",
+                  previousGuess: 0
+                })}>
+                  New Practice Round
+                </button>}
+            </div>
+
             <label>Guess how many beans</label>
             <input
               type="number"
