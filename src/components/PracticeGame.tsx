@@ -1,7 +1,7 @@
 import MatterScene from './MatterScene.tsx'
 import Guesses from './Guesses.tsx'
 import YouWinModal from './YouWinModal.tsx'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 export default function PracticeGame() {
 
@@ -9,7 +9,7 @@ export default function PracticeGame() {
     const [guesses, setGuesses] = useState([] as string[]);
     const [previousGuess, setPreviousGuess] = useState(0);
     const [winScreenOpen, setWinScreenOpen] = useState(false);
-    const [matterInfo, setMatterInfo] = useState({ numberOfBeans: Math.floor(Math.random() * 500) + 50, container: Math.floor(Math.random() * 3) });
+    const matterInfo = useRef({ numberOfBeans: Math.floor(Math.random() * 500) + 50, container: Math.floor(Math.random() * 3) })
 
     const openModal = () => setWinScreenOpen(true);
     const closeModal = () => setWinScreenOpen(false);
@@ -45,8 +45,8 @@ export default function PracticeGame() {
                 isOpen={winScreenOpen}
                 onClose={closeModal}
                 guesses={guesses}
-                tries={previousGuess === matterInfo.numberOfBeans ? String(guesses.length) : "X"}
-                answer={matterInfo.numberOfBeans}
+                tries={previousGuess === matterInfo.current.numberOfBeans ? String(guesses.length) : "X"}
+                answer={matterInfo.current.numberOfBeans}
                 day={0}
                 usingPractice={true}
             />
@@ -60,14 +60,14 @@ export default function PracticeGame() {
                             alert("Please enter a valid number");
                             return;
                         }
-                        if (guesses.length <= 4 && previousGuess !== matterInfo.numberOfBeans) {
-                            setGuesses([...guesses, getGuessDistance(Number(guess), matterInfo.numberOfBeans)]);
+                        if (guesses.length <= 4 && previousGuess !== matterInfo.current.numberOfBeans) {
+                            setGuesses([...guesses, getGuessDistance(Number(guess), matterInfo.current.numberOfBeans)]);
                             setPreviousGuess(Number(guess));
                         }
                     }}>
                         Submit
                     </button>
-                    {(guesses.length === 5 || previousGuess === matterInfo.numberOfBeans) &&
+                    {(guesses.length === 5 || previousGuess === matterInfo.current.numberOfBeans) &&
                         <button onClick={() => {
                             openModal();
                         }
@@ -79,8 +79,8 @@ export default function PracticeGame() {
             </div>
             <div className='bean-screen'>
                 <MatterScene
-                    numberOfBeans={matterInfo.numberOfBeans}
-                    container={matterInfo.container}
+                    numberOfBeans={matterInfo.current.numberOfBeans}
+                    container={matterInfo.current.container}
                 />
             </div>
         </>
