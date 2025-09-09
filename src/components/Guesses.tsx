@@ -4,7 +4,10 @@ export default function Guesses(props: { guesses: string[] }) {
         <li key={index}>{guess}</li>
     ));
 
-    return (
-        <ul>{list}</ul>
-    )
+    if (list.length > 0) {
+        return (
+            <ul>{list}</ul>
+        )
+    }
+    return <></>
 }
