@@ -27,7 +27,7 @@
 }
 
 .guess-input {
-  max-width: 15vw;
+  max-width: 30vw;
   display: flex;
   text-align: center;
   flex-direction: column;
