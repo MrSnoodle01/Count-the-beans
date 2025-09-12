@@ -9,7 +9,7 @@ export default function DailyGame() {
     const supabaseUrl = import.meta.env.VITE_DATABASE_URL as string;
     const supabaseKey = import.meta.env.VITE_DATABASE_KEY as string;
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const originalDate = new Date('2025-8-31');
+    const originalDate = new Date('2025/8/31');
     const currentDate = new Date();
 
     const [guess, setGuess] = useState("");
@@ -62,7 +62,6 @@ export default function DailyGame() {
                     setMatterInfo({ numberOfBeans: data[0].beanCount, container: data[0].container - 1 });
                 }
             } else { // if there is a new day then update everything to the next day, or if day > getDate, meaning the days have become unsynced. So sync them again
-                console.log("else");
                 const { data } = await supabase.from('data').select().eq('day', getDate());
                 if (data) {
                     setGuesses([]);
