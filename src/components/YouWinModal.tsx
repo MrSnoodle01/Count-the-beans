@@ -13,7 +13,8 @@ export default function YouWinModal(props: { isOpen: boolean, onClose: () => voi
 
     const copyToClipboard = async () => {
         let text: string = `Beans #${props.day} ` + props.tries + "/5" +
-            props.guesses.map(guess => "\n" + getEmojisFromText(guess).join("")).join("");
+            props.guesses.map(guess => "\n" + getEmojisFromText(guess).join("")).join("") +
+            "\nhttps://mrsnoodle01.github.io/Count-the-beans/";
         try {
             await navigator.clipboard.writeText(text);
         } catch (err) {
