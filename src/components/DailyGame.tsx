@@ -99,6 +99,9 @@ export default function DailyGame() {
                             setGuesses([...guesses, getGuessDistance(Number(guess), matterInfo.numberOfBeans)]);
                             setPreviousGuess(Number(guess));
                         }
+                        var form = document.getElementById("numberGuess") as HTMLInputElement;
+                        form.value = '';
+                        setGuess("");
                     }}>
                         Submit
                     </button>

@@ -64,6 +64,9 @@ export default function PracticeGame() {
                             setGuesses([...guesses, getGuessDistance(Number(guess), matterInfo.current.numberOfBeans)]);
                             setPreviousGuess(Number(guess));
                         }
+                        var form = document.getElementById("numberGuess") as HTMLInputElement;
+                        form.value = '';
+                        setGuess("");
                     }}>
                         Submit
                     </button>
