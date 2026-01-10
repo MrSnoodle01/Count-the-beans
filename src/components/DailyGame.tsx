@@ -1,14 +1,10 @@
 import MatterScene from './MatterScene.tsx'
 import Guesses from './Guesses.tsx'
 import YouWinModal from './YouWinModal.tsx'
-import { createClient } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
 import persistedState from '../assets/usePersistedState.ts'
 
 export default function DailyGame() {
-    const supabaseUrl = import.meta.env.VITE_DATABASE_URL as string;
-    const supabaseKey = import.meta.env.VITE_DATABASE_KEY as string;
-    const supabase = createClient(supabaseUrl, supabaseKey);
     const originalDate = new Date('2025/8/31');
     const currentDate = new Date();
 
@@ -53,22 +49,31 @@ export default function DailyGame() {
         }
     }
 
+    function jenkinsHash(key: string): number {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            const charCode = key.charCodeAt(i);
+            hash += charCode;
+            hash += (hash << 10);
+            hash ^= (hash >>> 6);
+        }
+        hash += (hash << 3);
+        hash ^= (hash >>> 11);
+        hash += (hash << 15);
+
+        return hash | 0;
+    }
+
     useEffect(() => {
         closeModal();
         const fetchData = async () => {
             if (getDate() === day) { // if day in local storage is equal to current day dont update anything, only spawn in beans again
-                const { data } = await supabase.from('data').select().eq('day', getDate());
-                if (data) {
-                    setMatterInfo({ numberOfBeans: data[0].beanCount, container: data[0].container - 1 });
-                }
+                setMatterInfo({ numberOfBeans: Math.abs(jenkinsHash(String(getDate())) % 500) + 50, container: Math.abs(jenkinsHash(String(getDate() * 23)) % 3) });
             } else { // if there is a new day then update everything to the next day, or if day > getDate, meaning the days have become unsynced. So sync them again
-                const { data } = await supabase.from('data').select().eq('day', getDate());
-                if (data) {
-                    setGuesses([]);
-                    setPreviousGuess(0);
-                    setDay(data[0].day);
-                    setMatterInfo({ numberOfBeans: data[0].beanCount, container: data[0].container - 1 });
-                }
+                setGuesses([]);
+                setPreviousGuess(0);
+                setDay(getDate());
+                setMatterInfo({ numberOfBeans: Math.abs(jenkinsHash(String(getDate())) % 500) + 50, container: Math.abs(jenkinsHash(String(getDate() * 23)) % 3) });
             }
         }
         fetchData();
